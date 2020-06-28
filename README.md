@@ -8,11 +8,15 @@ A simple album web app written in PHP based on TraversyMVC with some improvement
 
 ### Run the app
 1. clone the repo
+```
    git clone https://github.com/maherapi/album-php-mvc.git
+```
    
 2. move the cloned repo to the htdocs in you server directory
 Linux Terminal:
+```
    mv album-php-mvc-master /opt/lampp/htdocs/album
+```
 you may have to add sudo before the command.
 
 3. import the database file located in /opt/lampp/htdocs/album/maher_album.sql to you mysql.
