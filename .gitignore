@@ -1,3 +1,6 @@
 
 # stored images and assets
 public/resources/*/**
+
+# sqlite db
+db/**

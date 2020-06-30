@@ -10,7 +10,7 @@
     define("DB_NAME", "maher_album");
     
     // SQLite
-    define("DB_PATH", "resources/db/db.db");
+    define("DB_PATH", "../db/db.db");
 
 
     // website stuff
