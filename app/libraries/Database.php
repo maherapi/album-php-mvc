@@ -1,25 +1,18 @@
 <?php
     class Database {
-        private $host = DB_HOST;
-        private $user = DB_USER;
-        private $pass = DB_PASS;
-        private $dbname = DB_NAME;
-        
         private $dbh;
         private $error;
         private $stmt;
         
         public function __construct() {
-            $dsn = 'mysql:host=' . $this->host . ';dbname=' . $this->dbname;
-            $options = array (
-                PDO::ATTR_PERSISTENT => true,
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION 
-            );
-    
-            try {
-                $this->dbh = new PDO ($dsn, $this->user, $this->pass, $options);
-            } catch ( PDOException $e ) {
-                $this->error = $e->getMessage();
+            $db = DB;
+            switch($db) {
+                case 'SQLITE':
+                    $this->connectSqlite();
+                    break;
+                case 'MYSQL':
+                    $this->connectMysql();
+                    break;
             }
         }
         
@@ -58,6 +51,36 @@
         public function single(){
             $this->execute();
             return $this->stmt->fetch(PDO::FETCH_OBJ);
+        }
+
+        private function connectMysql() {
+            $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME;
+            $options = $this->getConnectionOptions();
+    
+            try {
+                $this->dbh = new PDO ($dsn, DB_USER, DB_PASS, $options);
+            } catch ( PDOException $e ) {
+                $this->error = $e->getMessage();
+            }
+        }
+
+        private function connectSqlite() {
+            $dsn = 'sqlite:' . DB_PATH;
+            $options = $this->getConnectionOptions();
+
+            try {
+                $this->dbh = new PDO ($dsn, null, null, $options);
+            } catch ( PDOException $e ) {
+                $this->error = $e->getMessage();
+            }
+        }
+
+        private function getConnectionOptions() {
+            $options = array (
+                PDO::ATTR_PERSISTENT => true,
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION 
+            );
+            return $options;
         }
     }
     
