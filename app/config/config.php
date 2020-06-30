@@ -15,7 +15,7 @@
 
     // website stuff
     define("URLROOT", "http://localhost/album");
-    define("APPROOT", dirname(dirname(__FILE__)));
+    define("APPROOT", '../app');
     define("SITENAME", "Album");
 
     // assets
