@@ -34,13 +34,14 @@
                     die($error);
                     continue;
                 }
+                $file_name = explode('.', $_FILES['images']['name'][$i])[0];
                 $img_name = bin2hex(random_bytes(10));
                 $tmp = explode('.', $_FILES['images']['name'][$i]);
                 $file_ext = strtolower(end($tmp));
                 $imageInfo = [
                     "image_url" => $img_name . '.' . $file_ext,
                     "album_id" => $album_id,
-                    "title" => "some title"
+                    "title" => $file_name
                 ];
                 $created = $this->model("Image")->create($imageInfo);
                 if(!$created) {
