@@ -51,12 +51,21 @@
             <span class="invalid-feedback"><?= $data['confirm_password_err']; ?></span>
         </div>
 
-        <div class="form-group">
-          <label for="category">Category:<sup>*</sup></label>
-          <select class="form-control form-control-lg" id="category" name="category">
-            <?= getCategorySelectOptionsTree($data['categories']) ?>
-          </select>
+        <div id="category-selects">
+          <div class="form-group">
+            <label for="category">Category:<sup>*</sup></label>
+            <select class="form-control form-control-lg" id="category" name="category" onchange="getSubCategories(this)" onfocus="this.selectedIndex = 0;">
+              <option selected disabled>--select--</option>
+              <?= getCategorySelectOptionsTree($data['categories']) ?>
+            </select>
+          </div>
+          <div class="sub-categories"></div>
         </div>
+        <?php if(isset($data['category_err']) && $data['category_err'] !== ''): ?>
+          <div class="alert alert-dismissible alert-danger"><?= $data['category_err'] ?></div>
+        <?php endif; ?>
+
+        <div class="spinner" id="category-spinner"></div>
 
         <div class="form-row">
           <div class="col">
@@ -70,4 +79,68 @@
     </div>
   </div>
   
-<?php require APPROOT . '/views/inc/footer.php'; ?>
+  <!-- close container div (from header file) -->
+  </div>
+
+  <script>
+    function getSubCategories(selectElm) {
+
+      document.querySelectorAll("select[name='category']")
+        .forEach(s => {
+          s.removeAttribute("id");
+          s.removeAttribute("name");
+        });
+      selectElm.setAttribute("id", "category");
+      selectElm.setAttribute("name", "category");
+
+      var subCatContainer = selectElm.parentNode.parentNode.querySelector(".sub-categories");
+
+      startLoadingAnimation();
+      subCatContainer.innerHTML = '';
+
+      var categoryId = selectElm.value;
+      var xml = new XMLHttpRequest();
+      xml.onreadystatechange = function() {
+        if(this.readyState == 4 && this.status == 200) {
+
+          var subCats = JSON.parse(this.responseText);
+
+          if(!subCats.length) {
+            stopLoadingAnimation();
+            return;
+          }
+
+          var options = '';
+          for(var i = 0; i < subCats.length; i++) {
+            options += '<option value="' + subCats[i].id + '">' + subCats[i].category + '</option>';
+          }
+          var template = `
+            <div class="form-group">
+              <label for="category">sub category of ${selectElm.options[selectElm.selectedIndex].text}:<sup>*</sup></label>
+              <select class="form-control form-control-lg" onchange="getSubCategories(this)" onfocus="this.selectedIndex = 0;">
+                <option selected disabled>--select--</option>
+                ${options}
+              </select>
+              </div>
+            <div class="sub-categories"></div>`;
+          subCatContainer.innerHTML = template;
+
+          stopLoadingAnimation();
+        }
+      }
+      xml.open("GET", "<?= URLROOT ?>/users/category/" + categoryId, true);
+      xml.send();
+    }
+
+    function startLoadingAnimation() {
+      var spinner = document.getElementById("category-spinner");
+      spinner.style.display = 'block';
+    }
+
+    function stopLoadingAnimation() {
+      var spinner = document.getElementById("category-spinner");
+      spinner.style.display = 'none';
+    }
+  </script>
+</body>
+</html>

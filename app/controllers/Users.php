@@ -41,6 +41,12 @@
             session_destroy();
             redirect('users/login');      
         }
+
+        public function category($parentId) {
+            $categories = $this->model('User')->getCategoriesByParent($parentId);
+            $response = json_encode($categories);
+            echo $response;
+        }
         
         public function loginView() {
             $data = [
@@ -80,7 +86,7 @@
         }
 
         public function registerView($passedData = []) {
-            $categories = $this->model('User')->getCategories();
+            $categories = $this->model('User')->getCategoriesByParent();
             $default = [
                 'name' => '',
                 'username' => '',
@@ -159,7 +165,8 @@
                 'username_err' => $this->validateUsername($_POST['username']),
                 'email_err' => $this->validateEmail($_POST['email']),
                 'password_err' => $this->validatePassword($_POST['password']),
-                'confirm_password_err' => $this->validateConfirmPassword($_POST['password'], $_POST['confirm_password'])
+                'confirm_password_err' => $this->validateConfirmPassword($_POST['password'], $_POST['confirm_password']),
+                'category_err' => $this->validateCategory($_POST['category'])
             ];
             $data = [];
             $hasError = false;
@@ -225,6 +232,13 @@
         private function validateConfirmPassword($password, $confirm) {
             if($password !== $confirm) {
                 return "password does not match";
+            }
+            return '';
+        }
+
+        private function validateCategory($category) {
+            if(!isset($category) || $category < 1) {
+                return 'category is required';
             }
             return '';
         }
