@@ -1,3 +1,21 @@
+<?php
+  function getCategorySelectOptionsTree($categories, $parentId = null, $level = 0) {
+    $select = "";
+    $currentCategories = array_filter($categories, function($v, $k) use ($parentId) {
+          return $v->parent_id === $parentId;
+        }, ARRAY_FILTER_USE_BOTH);
+  
+      foreach($currentCategories as $cat) {
+        $children = getCategorySelectOptionsTree($categories, $cat->id, $level+1);
+        $select .= '<option value="' . $cat->id . '">' . str_repeat("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", $level) . $cat->category . "</option>";
+        if(!empty($children)) {
+            $select .= $children;
+        }
+      }
+    return $select;
+  }
+?> 
+
 <?php require APPROOT . '/views/inc/header.php'; ?>
 
 <div class="row animate__animated animate__<?= $data['error'] ? 'shakeX' : 'fadeInUp' ?>">
@@ -31,6 +49,13 @@
             <label>Confirm Password:<sup>*</sup></label>
             <input type="password" name="confirm_password" class="form-control form-control-lg <?= (!empty($data['confirm_password_err'])) ? 'is-invalid' : ''; ?>" value="<?= $data['confirm_password']; ?>">
             <span class="invalid-feedback"><?= $data['confirm_password_err']; ?></span>
+        </div>
+
+        <div class="form-group">
+          <label for="category">Category:<sup>*</sup></label>
+          <select class="form-control form-control-lg" id="category" name="category">
+            <?= getCategorySelectOptionsTree($data['categories']) ?>
+          </select>
         </div>
 
         <div class="form-row">

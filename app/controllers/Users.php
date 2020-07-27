@@ -36,6 +36,8 @@
             unset($_SESSION['user_username']);
             unset($_SESSION['user_email']);
             unset($_SESSION['user_name']);
+            unset($_SESSION['user_category']);
+            unset($_SESSION['user_user_category']);
             session_destroy();
             redirect('users/login');      
         }
@@ -78,6 +80,7 @@
         }
 
         public function registerView() {
+            $categories = $this->model('User')->getCategories();
             $data = [
                 'name' => '',
                 'username' => '',
@@ -89,7 +92,8 @@
                 'email_err' => '',
                 'password_err' => '',
                 'confirm_password_err' => '',
-                'error' => false
+                'error' => false,
+                'categories' => $categories
             ];
             $this->view('users/register', $data);
         }
@@ -102,7 +106,8 @@
                 "name" => $_POST['name'],
                 "username" => $_POST['username'],
                 "email" => $_POST['email'],
-                "password" => $_POST['password']
+                "password" => $_POST['password'],
+                "category" => $_POST['category']
             ];
             try {
                 $model = $this->model("User");
@@ -233,5 +238,7 @@
             $_SESSION['user_username'] = $user->username; 
             $_SESSION['user_email'] = $user->email; 
             $_SESSION['user_name'] = $user->name;
+            $_SESSION['user_user_category'] = $user->user_category;
+            $_SESSION['user_category'] = $user->category;
         }
     }

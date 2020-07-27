@@ -9,6 +9,11 @@
         <li class="nav-item active">
           <a class="nav-link" href="<?= URLROOT; ?>">Home</a>
         </li>
+        <?php if(isset($_SESSION['user_category'])) : ?>
+          <li class="nav-item">
+            <a class="nav-link" href=""><?= $_SESSION['user_category'] ?></a>
+          </li>
+        <?php endif; ?>
       </ul>
       <ul class="navbar-nav ml-auto">
       <?php if(isset($_SESSION['user_id'])) : ?>

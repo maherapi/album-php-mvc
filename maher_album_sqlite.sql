@@ -6,7 +6,16 @@ CREATE TABLE IF NOT EXISTS "maher_users" (
 	"username"	VARCHAR NOT NULL UNIQUE,
 	"email"	VARCHAR NOT NULL UNIQUE,
 	"password"	VARCHAR NOT NULL,
-	"created_at"	TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+	"created_at"	TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	"user_category"	INTEGER,
+	FOREIGN KEY("user_category") REFERENCES "maher_user_category"("id")
+);
+DROP TABLE IF EXISTS "maher_user_category";
+CREATE TABLE IF NOT EXISTS "maher_user_category" (
+	"id"	INTEGER PRIMARY KEY AUTOINCREMENT,
+	"category"	TEXT NOT NULL UNIQUE,
+	"parent_id"	INTEGER,
+	FOREIGN KEY("parent_id") REFERENCES "maher_user_category"("id")
 );
 DROP TABLE IF EXISTS "maher_albums";
 CREATE TABLE IF NOT EXISTS "maher_albums" (
@@ -25,4 +34,14 @@ CREATE TABLE IF NOT EXISTS "maher_images" (
 	"album_id"	INTEGER NOT NULL,
 	"created_at"	TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+INSERT INTO "maher_user_category" ("id","category","parent_id") VALUES 
+ (1,'student',NULL),
+ (2,'employee',NULL),
+ (3,'full-time',2),
+ (4,'part-time',2),
+ (5,'high-schooler',1),
+ (6,'undergraduate',1),
+ (7,'software developer',3),
+ (8,'web develper',7);
 COMMIT;

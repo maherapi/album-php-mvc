@@ -2,6 +2,7 @@
     class User {
         private $db;
         private $table = "maher_users";
+        private $categoriesTable = "maher_user_category";
 
         const WRONG_CREDS_ERR = "wrong email or password"; 
         const WRONG_PASSWORD_ERR = "password does not match"; 
@@ -14,12 +15,13 @@
 
         public function register($userInfo) {
             try {
-                $this->db->query("INSERT INTO " . $this->table . "(name, username, email, password) VALUES(:name, :username, :email, :password)");
+                $this->db->query("INSERT INTO " . $this->table . "(name, username, email, password, user_category) VALUES(:name, :username, :email, :password, :category)");
                 $this->db->bind("name", $userInfo['name']);
                 $this->db->bind("username", $userInfo['username']);
                 $this->db->bind("email", $userInfo['email']);
                 $hashedPassword = password_hash($userInfo['password'],  PASSWORD_DEFAULT);
                 $this->db->bind("password", $hashedPassword);
+                $this->db->bind("category", $userInfo['category']);
 
                 $this->db->execute();
 
@@ -56,7 +58,13 @@
 
         public function findUserByEmail($email) {
             try {
-                $this->db->query("SELECT * FROM " . $this->table . " WHERE email LIKE :email");
+                $this->db->query(
+                    " SELECT u.id, name, username, email, password, created_at, user_category, category" .
+                    " FROM " . $this->table . " u" .
+                    " JOIN " . $this->categoriesTable . " c" .
+                    " ON u.user_category = c.id" .
+                    " WHERE email LIKE :email"
+                );
                 $this->db->bind("email", $email);
                 $createdUser = $this->db->single();
                 if(!$createdUser) {
@@ -70,6 +78,27 @@
                 } else {
                     die($msg);
                 }
+            }
+        }
+
+        public function getCategories() {
+            try {
+                $this->db->query("SELECT * FROM " . $this->categoriesTable);
+                $categories = $this->db->resultset();
+                return $categories;
+            } catch (Exception $e) {
+                die($e->getMessage());
+            }
+        }
+
+        public function getCategoriesByParent($parentId = null) {
+            try {
+                $this->db->query("SELECT * FROM " . $this->categoriesTable . " WHERE parent_id IS :parentId");
+                $this->db->bind("parentId", $parentId);
+                $categories = $this->db->resultset();
+                return $categories;
+            } catch (Exception $e) {
+                die($e->getMessage());
             }
         }
     }
