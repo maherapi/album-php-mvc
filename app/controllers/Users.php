@@ -79,9 +79,9 @@
             }
         }
 
-        public function registerView() {
+        public function registerView($passedData = []) {
             $categories = $this->model('User')->getCategories();
-            $data = [
+            $default = [
                 'name' => '',
                 'username' => '',
                 'email' => '',
@@ -95,6 +95,7 @@
                 'error' => false,
                 'categories' => $categories
             ];
+            $data = array_merge($default, $passedData);
             $this->view('users/register', $data);
         }
 
@@ -122,14 +123,9 @@
                     "email" => $_POST['email'],
                     "password" => $_POST['password'],
                     'confirm_password' => $_POST['confirm_password'],
-                    'name_err' => '',
-                    'username_err' => '',
-                    'email_err' => '',
-                    'password_err' => '',
-                    'confirm_password_err' => '',
                     'error' => true
                 ];
-                $this->view('users/register', $data);
+                $this->registerView($data);
             }
         }
 
@@ -180,7 +176,7 @@
             $data['confirm_password'] = $_POST['confirm_password'];
             $data['error'] = $hasError;
             if($hasError) {
-                $this->view('users/register', $data);
+                $this->registerView($data);
                 return false;
             } else {
                 return true;
