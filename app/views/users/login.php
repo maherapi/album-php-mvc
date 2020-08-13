@@ -5,6 +5,7 @@
         <h2>Login</h2>
         <p>Please fill in your credentials to login.</p>
         <?php flash('login_faild'); ?>
+        <?php flash('not_activated'); ?>
         <form action="<?= URLROOT; ?>/users/login" method="post">
           <div class="form-group">
               <label>Email:<sup>*</sup></label>

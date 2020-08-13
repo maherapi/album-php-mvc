@@ -10,4 +10,8 @@
 </head>
 <body>
     <?php require APPROOT . '/views/inc/navbar.php'; ?>
+    <?php if(isLoggedIn() && isAdmin()): ?>
+        <?php require APPROOT . '/views/admins/admin-inc/admin-navbar.php'; ?>
+    <?php endif; ?>
+    <div class="mb-3"></div>
     <div class="container">

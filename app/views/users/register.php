@@ -24,6 +24,7 @@
       <h2>Create An Account</h2>
       <p>Please fill this form to register with us</p>
       <?php flash('register_faild'); ?>
+      <?php flash('not_activated'); ?>
       <form action="<?= URLROOT; ?>/users/register" method="post">
         <div class="form-group">
             <label>Name:<sup>*</label>

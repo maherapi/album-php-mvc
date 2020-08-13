@@ -3,8 +3,8 @@
 
         public function login() {
             if(isLoggedIn()) {
-                redirect('albums');
-            }
+                redirectToProperPage();
+            }            
             $method = $_SERVER['REQUEST_METHOD'];
             switch ($method) {
                 case 'GET':
@@ -18,8 +18,8 @@
         
         public function register() {
             if(isLoggedIn()) {
-                redirect('albums');
-            }
+                redirectToProperPage();
+            }  
             $method = $_SERVER['REQUEST_METHOD'];
             switch ($method) {
                 case 'GET':
@@ -70,8 +70,11 @@
             try {
                 $model = $this->model("User");
                 $createdUser = $model->login($creds);
+                if($createdUser->is_activated != 1) {
+                    redirectNotActivatedUsers();
+                }
                 $this->createUserSession($createdUser);
-                redirect('albums');
+                redirectToProperPage();
             } catch (Exception $e) {
                 flash("login_faild", $e->getMessage(), "alert alert-danger");
                 $data = [
@@ -119,8 +122,7 @@
             try {
                 $model = $this->model("User");
                 $createdUser = $model->register($userInfo);
-                $this->createUserSession($createdUser);
-                redirect('albums');
+                redirectNotActivatedUsers();
             } catch (Exception $e) {
                 flash("register_faild", $e->getMessage(), "alert alert-danger");
                 $data = [
@@ -250,5 +252,7 @@
             $_SESSION['user_name'] = $user->name;
             $_SESSION['user_user_category'] = $user->user_category;
             $_SESSION['user_category'] = $user->category;
+            $_SESSION['user_is_admin'] = $user->is_admin;
+            $_SESSION['user_is_activated'] = $user->is_activated;
         }
     }

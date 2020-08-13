@@ -38,6 +38,19 @@ body {
     animation-timing-function: linear;
 }
 
+.spinner-sm {
+    display: none;
+    margin: 5px auto;
+    width: 20px;
+    height: 20px;
+    border: 2px dotted #080808;
+    border-radius: 50%;
+    animation-name: rotate;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
 @keyframes rotate {
     from {
         transform: rotate(0);

@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container">
     <a class="navbar-brand" href="#"><?= SITENAME; ?></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -9,14 +9,14 @@
         <li class="nav-item active">
           <a class="nav-link" href="<?= URLROOT; ?>">Home</a>
         </li>
-        <?php if(isset($_SESSION['user_category'])) : ?>
+        <?php if(isset($_SESSION['user_category']) && userIsActivated()) : ?>
           <li class="nav-item">
             <a class="nav-link" href=""><?= $_SESSION['user_category'] ?></a>
           </li>
         <?php endif; ?>
       </ul>
       <ul class="navbar-nav ml-auto">
-      <?php if(isset($_SESSION['user_id'])) : ?>
+      <?php if(isset($_SESSION['user_is_activated']) && userIsActivated()) : ?>
         <li class="nav-item">
           <a class="nav-link" href="<?= URLROOT; ?>/users/logout"><i class="fa fa-sign-out text-white" aria-hidden="true"></i> Logout</a>
         </li>

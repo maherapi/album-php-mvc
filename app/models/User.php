@@ -59,7 +59,7 @@
         public function findUserByEmail($email) {
             try {
                 $this->db->query(
-                    " SELECT u.id, name, username, email, password, created_at, user_category, category" .
+                    " SELECT u.id, name, username, email, password, created_at, user_category, category, is_admin, is_activated" .
                     " FROM " . $this->table . " u" .
                     " JOIN " . $this->categoriesTable . " c" .
                     " ON u.user_category = c.id" .
@@ -78,6 +78,68 @@
                 } else {
                     die($msg);
                 }
+            }
+        }
+
+        public function getAllUsers() {
+            try {
+                $this->db->query(
+                    " SELECT u.id, name, username, email, password, created_at, user_category, category, is_admin, is_activated" .
+                    " FROM " . $this->table . " u" .
+                    " JOIN " . $this->categoriesTable . " c" .
+                    " ON u.user_category = c.id" .
+                    " WHERE is_admin != 1"
+                );
+                $users = $this->db->resultset();
+                return $users;
+            } catch(Exception $e) {
+                die($msg);
+            }
+        }
+
+        public function updateUserActivationStatus($newStatus, $userId) {
+            $status = 0;
+            if($newStatus == true) {
+                $status = 1;
+            } else {
+                $status = 0;
+            }
+            try {
+                $this->db->query(
+                    " UPDATE " . $this->table .
+                    " SET is_activated = :status" .
+                    " WHERE id = :userId"
+                );
+                $this->db->bind("status", $status);
+                $this->db->bind("userId", $userId);
+                $this->db->execute();
+            } catch(Exception $e) {
+                die($msg);
+            }
+        }
+
+        public function getUsersStatistics() {
+            try {
+                $this->db->query(
+                    " SELECT 'is_activated_' || is_activated AS activation_status, count(id) AS count" .
+                    " FROM " . $this->table .
+                    " WHERE is_admin != 1" .
+                    " GROUP BY is_activated"
+                );
+                $usersStatistics = $this->db->resultset();
+                foreach($usersStatistics as $stat) {
+                    if($stat->activation_status === 'is_activated_1')
+                        $activated_users = $stat->count;
+                    if($stat->activation_status === 'is_activated_0')
+                        $deactivated_users = $stat->count;
+                }
+                $data = [
+                    'activated_users' => $activated_users,
+                    'deactivated_users' => $deactivated_users
+                ];
+                return $data;
+            } catch(Exception $e) {
+                die($msg);
             }
         }
 

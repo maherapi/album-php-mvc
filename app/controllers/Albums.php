@@ -5,6 +5,12 @@
             if(!isLoggedIn()) {
                 redirect('users/login');
             }
+            if(isAdmin()) {
+                redirect('admins');
+            }
+            if(!userIsActivated()) {
+                redirectNotActivatedUsers();
+            }
         }
 
         public function index() {
