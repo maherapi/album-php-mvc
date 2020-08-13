@@ -25,6 +25,17 @@ body {
     max-width: 100%;
 }
 
+.notification-bell {
+    position: relative;
+}
+
+.notification-bell .notification-badge-position {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateY(50%);
+}
+
 .spinner {
     display: none;
     margin: 20px auto;

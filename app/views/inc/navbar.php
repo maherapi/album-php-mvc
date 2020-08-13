@@ -17,8 +17,17 @@
       </ul>
       <ul class="navbar-nav ml-auto">
       <?php if(isset($_SESSION['user_is_activated']) && userIsActivated()) : ?>
+        <li class="nav-item dropdown show">
+          <a class="nav-link dropdown-toggle notification-bell" id="notification-icon" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">
+            <i class="fa fa-bell text-white" aria-hidden="true"></i>
+            <span class="badge badge-primary badge-pill notification-badge-position" id="notifications-badge"></span>
+            <div class="spinner-sm notification-badge-position bg-warning" id="notifications-spinner"></div>
+          </a>
+          <div class="dropdown-menu p-3" id="notifications-menu">
+          </div>
+      </li>
         <li class="nav-item">
-          <a class="nav-link" href="<?= URLROOT; ?>/users/logout"><i class="fa fa-sign-out text-white" aria-hidden="true"></i> Logout</a>
+          <a class="nav-link" href="<?= URLROOT; ?>/users/logout">Logout</a>
         </li>
       <?php else : ?>
         <li class="nav-item">
@@ -31,4 +40,8 @@
       </ul>
     </div>
   </div>
-      </nav>
+</nav>
+
+<?php if(isset($_SESSION['user_is_activated']) && userIsActivated()) : ?>
+  <script><?php require_once APPROOT . "/views/inc/ajax/notifications.js" ?></script>
+<?php endif; ?>

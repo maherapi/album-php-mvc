@@ -122,6 +122,12 @@
             try {
                 $model = $this->model("User");
                 $createdUser = $model->register($userInfo);
+                $notification = [
+                    'title' => "new user",
+                    'description' => "new user registered: " . $userInfo['name'],
+                    'target_user' => 2
+                ];
+                $this->model("Notification")->create($notification);
                 redirectNotActivatedUsers();
             } catch (Exception $e) {
                 flash("register_faild", $e->getMessage(), "alert alert-danger");

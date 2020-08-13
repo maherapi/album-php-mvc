@@ -7,6 +7,7 @@
     <?php require APPROOT . '/views/inc/styles-import.php'; ?>
     <?php require APPROOT . '/views/inc/scripts-import.php'; ?>
     <title><?= SITENAME ?></title>
+    <script>var URLROOT = "<?= URLROOT ?>";</script>
 </head>
 <body>
     <?php require APPROOT . '/views/inc/navbar.php'; ?>
