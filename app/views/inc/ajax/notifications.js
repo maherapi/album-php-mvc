@@ -19,6 +19,9 @@ function getNotifications() {
                 "<p>" + response.notifications[i].description + "</h5>" +
                 "</li><hr>\n";
         }
+        if(response.notifications.length === 0) {
+          menu.innerHTML = "No new notification";
+        }
     }
   };
   xml.open("GET", URLROOT + "/notifications", true);
